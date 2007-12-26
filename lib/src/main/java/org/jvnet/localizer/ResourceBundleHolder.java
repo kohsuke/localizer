@@ -43,6 +43,6 @@ public final class ResourceBundleHolder {
      * Formats a resource specified by the given key by using the default locale
      */
     public String format(String key, Object... args) {
-        return MessageFormat.format(get(Locale.getDefault()).getString(key),args);
+        return MessageFormat.format(get(LocaleProvider.getLocale()).getString(key),args);
     }
 }
