@@ -50,6 +50,14 @@ public class GeneratorMojo extends AbstractMojo {
      */
     protected File outputDirectory;
 
+    /**
+     * Additional file name mask like "Messages.properties" to further
+     * restrict the resource processing.
+     *
+     * @parameter
+     */
+    protected String fileMask;
+
     private JCodeModel cm;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -70,6 +78,8 @@ public class GeneratorMojo extends AbstractMojo {
             for( String relPath : fs.getDirectoryScanner(new Project()).getIncludedFiles() ) {
                 File f = new File(baseDir,relPath);
                 if(!f.getName().endsWith(".properties") || f.getName().contains("_"))
+                    continue;
+                if(fileMask!=null && !f.getName().equals(fileMask))
                     continue;
 
                 try {
