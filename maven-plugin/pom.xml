@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jvnet.localizer</groupId>
+    <artifactId>localizer-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>maven-localizer-plugin</artifactId>
+  <packaging>maven-plugin</packaging>
+  <name>Localizer generator</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-archiver</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.7.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.codemodel</groupId>
+      <artifactId>codemodel</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>localizer</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>java.net2</id>
+      <url>http://download.java.net/maven/2/</url>
+    </repository>
+  </repositories>
+</project>
