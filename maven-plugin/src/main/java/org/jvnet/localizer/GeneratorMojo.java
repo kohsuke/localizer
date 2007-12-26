@@ -33,7 +33,6 @@ public class GeneratorMojo extends AbstractMojo {
      *
      * @parameter default-value="${project.build.directory}/generated-sources"
      * @required
-     * @readonly
      */
     protected File outputDirectory;
 
