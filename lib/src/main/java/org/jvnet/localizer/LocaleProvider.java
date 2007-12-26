@@ -45,6 +45,9 @@ public abstract class LocaleProvider {
         return theInstance.get();
     }
 
+    /**
+     * {@link LocaleProvider} that uses {@link Locale#getDefault()}.
+     */
     public static final LocaleProvider DEFAULT = new LocaleProvider() {
         public Locale get() {
             return Locale.getDefault();
