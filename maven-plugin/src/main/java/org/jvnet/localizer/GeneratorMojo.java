@@ -45,6 +45,10 @@ public class GeneratorMojo extends AbstractMojo {
     protected String fileMask;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        String pkg = project.getPackaging();
+        if(pkg!=null && pkg.equals("pom"))
+            return; // skip POM modules
+
         Generator g = new Generator(outputDirectory, new Reporter() {
             public void debug(String msg) {
                 getLog().debug(msg);
@@ -53,6 +57,8 @@ public class GeneratorMojo extends AbstractMojo {
 
         for(Resource res : (List<Resource>)project.getResources()) {
             File baseDir = new File(res.getDirectory());
+            if(!baseDir.exists())
+                continue;   // this happens for example when POM inherits the default resource folder but no such folder exists.
 
             FileSet fs = new FileSet();
             fs.setDir(baseDir);
