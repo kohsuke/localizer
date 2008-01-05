@@ -57,6 +57,8 @@ public class GeneratorMojo extends AbstractMojo {
 
         for(Resource res : (List<Resource>)project.getResources()) {
             File baseDir = new File(res.getDirectory());
+            if(!baseDir.exists())
+                continue;   // this happens for example when POM inherits the default resource folder but no such folder exists.
 
             FileSet fs = new FileSet();
             fs.setDir(baseDir);
