@@ -45,6 +45,10 @@ public class GeneratorMojo extends AbstractMojo {
     protected String fileMask;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        String pkg = project.getPackaging();
+        if(pkg!=null && pkg.equals("pom"))
+            return; // skip POM modules
+
         Generator g = new Generator(outputDirectory, new Reporter() {
             public void debug(String msg) {
                 getLog().debug(msg);
