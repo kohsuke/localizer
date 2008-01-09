@@ -34,7 +34,7 @@ public final class ResourceBundleHolder {
         synchronized(this) {
             rb = bundles.get(locale);
             if(rb!=null)    return rb;
-            bundles.put(locale, rb=ResourceBundle.getBundle(owner.getName(),locale));
+            bundles.put(locale, rb=ResourceBundle.getBundle(owner.getName(),locale,owner.getClassLoader()));
         }
         return rb;
     }
