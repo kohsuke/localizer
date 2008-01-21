@@ -94,7 +94,7 @@ public class Generator {
                     inv.arg(arg);
                 m.body()._return(inv);
 
-                m.javadoc().add(value);
+                m.javadoc().add(escape(value));
 
                 // generate localizable factory
                 args.clear();
@@ -107,7 +107,7 @@ public class Generator {
                     inv.arg(arg);
                 m.body()._return(inv);
 
-                m.javadoc().add(value);
+                m.javadoc().add(escape(value));
             }
 
         } catch (JClassAlreadyExistsException e) {
@@ -116,20 +116,15 @@ public class Generator {
 
     }
 
+    private String escape(String value) {
+        return value.replace("&","&amp;").replace("<","&lt;");
+    }
+
     /**
      * Counts the number of arguments.
      */
     protected int countArgs(String formatString) {
-        List<String> args = new ArrayList<String>();
-        String lastStr = formatString;
-
-        while(true) {
-            args.add("xxx");
-            String s = MessageFormat.format(formatString, args.toArray());
-            if(s.equals(lastStr))
-                return args.size()-1;
-            lastStr = s;
-        }
+        return new MessageFormat(formatString).getFormatsByArgumentIndex().length;
     }
 
     protected String toJavaIdentifier(String key) {
