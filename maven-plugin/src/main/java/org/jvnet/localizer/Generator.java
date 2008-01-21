@@ -94,7 +94,7 @@ public class Generator {
                     inv.arg(arg);
                 m.body()._return(inv);
 
-                m.javadoc().add(value.replace("<","&lt;"));
+                m.javadoc().add(escape(value));
 
                 // generate localizable factory
                 args.clear();
@@ -107,13 +107,17 @@ public class Generator {
                     inv.arg(arg);
                 m.body()._return(inv);
 
-                m.javadoc().add(value.replace("<","&lt;"));
+                m.javadoc().add(escape(value));
             }
 
         } catch (JClassAlreadyExistsException e) {
             throw new AssertionError(e);
         }
 
+    }
+
+    private String escape(String value) {
+        return value.replace("&","&amp;").replace("<","&lt;");
     }
 
     /**
