@@ -94,7 +94,7 @@ public class Generator {
                     inv.arg(arg);
                 m.body()._return(inv);
 
-                m.javadoc().add(value);
+                m.javadoc().add(value.replace("<","&lt;"));
 
                 // generate localizable factory
                 args.clear();
@@ -107,7 +107,7 @@ public class Generator {
                     inv.arg(arg);
                 m.body()._return(inv);
 
-                m.javadoc().add(value);
+                m.javadoc().add(value.replace("<","&lt;"));
             }
 
         } catch (JClassAlreadyExistsException e) {
@@ -120,11 +120,11 @@ public class Generator {
      * Counts the number of arguments.
      */
     protected int countArgs(String formatString) {
-        List<String> args = new ArrayList<String>();
+        List<Object> args = new ArrayList<Object>();
         String lastStr = formatString;
 
         while(true) {
-            args.add("xxx");
+            args.add(1);
             String s = MessageFormat.format(formatString, args.toArray());
             if(s.equals(lastStr))
                 return args.size()-1;
