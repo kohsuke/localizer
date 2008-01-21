@@ -124,16 +124,7 @@ public class Generator {
      * Counts the number of arguments.
      */
     protected int countArgs(String formatString) {
-        List<Object> args = new ArrayList<Object>();
-        String lastStr = formatString;
-
-        while(true) {
-            args.add(1);
-            String s = MessageFormat.format(formatString, args.toArray());
-            if(s.equals(lastStr))
-                return args.size()-1;
-            lastStr = s;
-        }
+        return new MessageFormat(formatString).getFormatsByArgumentIndex().length;
     }
 
     protected String toJavaIdentifier(String key) {
