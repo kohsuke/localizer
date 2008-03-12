@@ -100,7 +100,7 @@ public final class ResourceBundleHolder {
         if (l.getCountry().length() > 0)
             return new Locale(l.getLanguage());
         if (l.getLanguage().length()>0)
-            return Locale.ROOT;
+            return ROOT;
         return null;
     }
 
