@@ -3,9 +3,18 @@
   <parent>
     <groupId>org.jvnet.localizer</groupId>
     <artifactId>localizer-parent</artifactId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.6</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>localizer</artifactId>
   <name>Localizer</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.0</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
