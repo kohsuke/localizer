@@ -8,11 +8,17 @@ import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JVar;
+import com.sun.codemodel.CodeWriter;
+import com.sun.codemodel.JPackage;
+import com.sun.codemodel.writer.FileCodeWriter;
 import org.apache.tools.ant.DirectoryScanner;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
+import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +75,7 @@ public class Generator {
 
         try {
             JDefinedClass c = cm._class(className);
+            c.annotate(SuppressWarnings.class).paramArray("value").param("").param("PMD");
 
             // [RESULT]
             // private static final ResourceBundleHolder holder = new BundleHolder(Messages.class);
@@ -144,6 +151,22 @@ public class Generator {
 
     public void build() throws IOException {
         outputDirectory.mkdirs();
-        cm.build(outputDirectory);
+        cm.build(new CodeWriter() {
+            private final CodeWriter delegate = new FileCodeWriter(outputDirectory);
+
+            public Writer openSource(JPackage pkg, String fileName) throws IOException {
+                Writer w = super.openSource(pkg, fileName);
+                new PrintWriter(w).println("// CHECKSTYLE:OFF");
+                return w;
+            }
+
+            public void close() throws IOException {
+                delegate.close();
+            }
+
+            public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
+                return delegate.openBinary(pkg, fileName);
+            }
+        });
     }
 }
