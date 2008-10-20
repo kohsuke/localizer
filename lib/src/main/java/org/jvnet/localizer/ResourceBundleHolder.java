@@ -2,22 +2,39 @@ package org.jvnet.localizer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
+import java.io.ObjectStreamException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.lang.ref.WeakReference;
 
 /**
  * Maintains {@link ResourceBundle}s per locale.
  *
  * @author Kohsuke Kawaguchi
  */
-public final class ResourceBundleHolder {
-    private final Map<Locale,ResourceBundle> bundles = new ConcurrentHashMap<Locale,ResourceBundle>();
+public final class ResourceBundleHolder implements Serializable {
+    /** Need to cache, but not tie up a classloader refernce in cases of unloading */
+    private static final Map<Class, WeakReference<Map<Locale, ResourceBundle>>> cache =
+            new WeakHashMap<Class, WeakReference<Map<Locale, ResourceBundle>>> ();
+    private static final Object cacheLock = new Object();
+
+    private static Map<Locale,ResourceBundle> lookupCache(Class clazz) {
+        synchronized (cacheLock) {
+            WeakReference<Map<Locale, ResourceBundle>> entry = cache.get(clazz);
+            if (entry == null || entry.get() == null) {
+                final ConcurrentHashMap<Locale, ResourceBundle> bundles = new ConcurrentHashMap<Locale, ResourceBundle>();
+                entry = new WeakReference<Map<Locale, ResourceBundle>>(bundles);
+                cache.put(clazz, entry);
+                return bundles;
+            }
+            return entry.get();
+        }
+    }
+
+    private transient Map<Locale,ResourceBundle> bundles;
     private final Class owner;
 
     /**
@@ -31,6 +48,15 @@ public final class ResourceBundleHolder {
      */
     public ResourceBundleHolder(Class owner) {
         this.owner = owner;
+        this.bundles = lookupCache(owner);
+    }
+
+    /**
+     * Work around deserialization issues.
+     */
+    private Object readResolve() throws ObjectStreamException {
+        this.bundles = lookupCache(owner);
+        return this;
     }
 
     /**
