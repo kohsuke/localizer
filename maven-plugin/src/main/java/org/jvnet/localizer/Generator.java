@@ -78,10 +78,10 @@ public class Generator {
             c.annotate(SuppressWarnings.class).paramArray("value").param("").param("PMD");
 
             // [RESULT]
-            // private static final ResourceBundleHolder holder = new BundleHolder(Messages.class);
+            // private static final ResourceBundleHolder holder = BundleHolder.get(Messages.class);
 
             JVar holder = c.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, ResourceBundleHolder.class, "holder",
-                    JExpr._new(cm.ref(ResourceBundleHolder.class)).arg(c.dotclass()) );
+                    cm.ref(ResourceBundleHolder.class).staticInvoke("get").arg(c.dotclass()) );
 
 
             for (Entry<Object,Object> e : props.entrySet()) {
