@@ -12,7 +12,7 @@
 
       <item name="Downloads" href="https://download.java.net/maven/2/org/jvnet/localizer/"/>
       <item name="Mailing lists" href="servlets/ProjectMailingListList"/>
-      <item name="Source code" href="source/browse/trunk/localizer/"/>
+      <item name="Source code" href="source/browse/localizer/trunk/localizer/"/>
       <item name="Issues" href="servlets/ProjectIssues"/>
     </menu>
     ${reports}
