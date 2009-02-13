@@ -37,6 +37,6 @@ public class Localizable implements Serializable {
     }
 
     public String toString() {
-        return toString(Locale.getDefault());
+        return toString(LocaleProvider.getLocale());
     }
 }
