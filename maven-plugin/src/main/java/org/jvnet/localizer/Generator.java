@@ -136,7 +136,7 @@ public class Generator {
 
     protected String toJavaIdentifier(String key) {
         // TODO: this is fairly dumb implementation
-        return key.replace('.','_');
+        return key.replace('.','_').replace('-','_');
     }
 
     protected String toClassName(String relPath) {
