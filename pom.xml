@@ -3,7 +3,7 @@
   <groupId>org.jvnet.localizer</groupId>
   <artifactId>localizer-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.11-SNAPSHOT</version>
+  <version>1.10-SNAPSHOT</version>
   <name>Localizer parent POM</name>
   <modules>
     <module>lib</module>
