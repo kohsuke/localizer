@@ -37,7 +37,7 @@ public final class ResourceBundleHolder implements Serializable {
     }
 
     private transient final Map<Locale,ResourceBundle> bundles = new ConcurrentHashMap<Locale,ResourceBundle>();
-    private final Class owner;
+    public final Class owner;
 
     /**
      * {@link Locale} object that corresponds to the base bundle.
@@ -107,6 +107,11 @@ public final class ResourceBundleHolder implements Serializable {
 
         }
         return rb;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getName()+"["+owner.getName()+"]";
     }
 
     static class ResourceBundleImpl extends PropertyResourceBundle {
