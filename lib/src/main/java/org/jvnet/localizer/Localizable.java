@@ -3,6 +3,9 @@ package org.jvnet.localizer;
 import java.util.Locale;
 import java.text.MessageFormat;
 import java.io.Serializable;
+import java.util.MissingResourceException;
+
+import static java.util.Arrays.asList;
 
 /**
  * Captures the localizable string. Can be converted to a string just by
@@ -33,7 +36,11 @@ public class Localizable implements Serializable {
     }
 
     public String toString(Locale locale) {
-        return MessageFormat.format(holder.get(locale).getString(key),args);
+        try {
+            return MessageFormat.format(holder.get(locale).getString(key),args);
+        } catch (MissingResourceException e) {
+            throw new RuntimeException("Failed to localize key="+key+",args="+ asList(args),e);
+        }
     }
 
     public String toString() {
