@@ -3,7 +3,7 @@
   <groupId>org.jvnet.localizer</groupId>
   <artifactId>localizer-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.13</version>
+  <version>1.14-SNAPSHOT</version>
   <name>Localizer parent POM</name>
   <modules>
     <module>lib</module>
@@ -12,8 +12,8 @@
   </modules>
 
   <scm>
-    <connection>scm:svn:https://svn.java.net/svn/localizer~svn/tags/localizer-parent-1.13</connection>
-    <developerConnection>scm:svn:https://svn.java.net/svn/localizer~svn/tags/localizer-parent-1.13</developerConnection>
+    <connection>scm:svn:https://svn.java.net/svn/localizer~svn/trunk/localizer</connection>
+    <developerConnection>scm:svn:https://svn.java.net/svn/localizer~svn/trunk/localizer</developerConnection>
   </scm>
 
   <licenses>
