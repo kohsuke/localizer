@@ -12,8 +12,8 @@
   </modules>
 
   <scm>
-    <connection>scm:svn:https://www.dev.java.net/svn/localizer/trunk/localizer</connection>
-    <developerConnection>scm:svn:https://www.dev.java.net/svn/localizer/trunk/localizer</developerConnection>
+    <connection>scm:svn:https://svn.java.net/svn/localizer~svn/trunk/localizer</connection>
+    <developerConnection>scm:svn:https://svn.java.net/svn/localizer~svn/trunk/localizer</developerConnection>
   </scm>
 
   <licenses>
