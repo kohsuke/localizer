@@ -12,8 +12,8 @@
   </modules>
 
   <scm>
-    <connection>scm:svn:https://svn.java.net/svn/localizer~svn/trunk/localizer</connection>
-    <developerConnection>scm:svn:https://svn.java.net/svn/localizer~svn/trunk/localizer</developerConnection>
+    <connection>scm:git:git@github.com/kohsuke/localizer.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/kohsuke/localizer.git</developerConnection>
   </scm>
 
   <licenses>
