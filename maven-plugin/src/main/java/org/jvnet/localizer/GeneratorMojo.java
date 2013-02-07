@@ -52,7 +52,7 @@ public class GeneratorMojo extends AbstractMojo {
     protected MavenProject project;
 
     /**
-     * The directory to place generated property files.
+     * The directory to place generated Java sources.
      *
      * @parameter default-value="${project.build.directory}/generated-sources"
      * @required
