@@ -52,7 +52,7 @@ public class GeneratorMojo extends AbstractMojo {
     protected MavenProject project;
 
     /**
-     * The directory to place generated property files.
+     * The directory to place generated Java sources.
      *
      * @parameter default-value="${project.build.directory}/generated-sources"
      * @required
@@ -67,12 +67,20 @@ public class GeneratorMojo extends AbstractMojo {
      */
     protected String fileMask;
 
+    /**
+     * The charset encoding of generated Java sources.
+     * Default to the platform specific encoding.
+     *
+     * @parameter
+     */
+    protected String outputEncoding;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         String pkg = project.getPackaging();
         if(pkg!=null && pkg.equals("pom"))
             return; // skip POM modules
 
-        Generator g = new Generator(outputDirectory, new Reporter() {
+        Generator g = new Generator(outputDirectory, outputEncoding, new Reporter() {
             public void debug(String msg) {
                 getLog().debug(msg);
             }
