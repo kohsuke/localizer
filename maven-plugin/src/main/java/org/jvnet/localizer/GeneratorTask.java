@@ -32,7 +32,7 @@ import java.io.IOException;
 
 /**
  * Ant task for resource generation.
- * 
+ *
  * @author Kohsuke Kawaguchi
  */
 public class GeneratorTask extends MatchingTask {
@@ -40,6 +40,11 @@ public class GeneratorTask extends MatchingTask {
      * Source and destination.
      */
     private File dir,todir;
+
+    /**
+     * Encoding of generated sources.
+     */
+    private String encoding;
 
     public void setDir(File dir) {
         this.dir = dir;
@@ -49,8 +54,12 @@ public class GeneratorTask extends MatchingTask {
         this.todir = todir;
     }
 
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
     public void execute() throws BuildException {
-        Generator g = new Generator(todir,new Reporter() {
+        Generator g = new Generator(todir, encoding, new Reporter() {
             public void debug(String msg) {
                 log(msg, Project.MSG_DEBUG);
             }
