@@ -54,10 +54,16 @@ import java.util.Properties;
 public class Generator {
     private final JCodeModel cm = new JCodeModel();
     private final File outputDirectory;
+    private final String outputEncoding;
     private final Reporter reporter;
 
     public Generator(File outputDirectory, Reporter reporter) {
+        this(outputDirectory, null, reporter);
+    }
+
+    public Generator(File outputDirectory, String outputEncoding, Reporter reporter) {
         this.outputDirectory = outputDirectory;
+        this.outputEncoding = outputEncoding;
         this.reporter = reporter;
     }
 
@@ -175,9 +181,10 @@ public class Generator {
     public void build() throws IOException {
         outputDirectory.mkdirs();
         cm.build(new CodeWriter() {
-            private final CodeWriter delegate = new FileCodeWriter(outputDirectory);
+            private final CodeWriter delegate = new FileCodeWriter(outputDirectory, outputEncoding);
 
             public Writer openSource(JPackage pkg, String fileName) throws IOException {
+                super.encoding = outputEncoding;
                 Writer w = super.openSource(pkg, fileName);
                 new PrintWriter(w).println("// CHECKSTYLE:OFF");
                 return w;
