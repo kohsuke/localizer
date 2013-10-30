@@ -75,6 +75,7 @@ public class GeneratorMojo extends AbstractMojo {
      */
     protected String outputEncoding;
 
+    @SuppressWarnings("unchecked")
     public void execute() throws MojoExecutionException, MojoFailureException {
         String pkg = project.getPackaging();
         if(pkg!=null && pkg.equals("pom"))
