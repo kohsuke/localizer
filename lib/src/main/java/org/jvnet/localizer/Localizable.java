@@ -58,6 +58,10 @@ public class Localizable implements Serializable {
         }
     }
 
+    public String getKey() {
+        return key;
+    }
+
     public String toString(Locale locale) {
         try {
             return MessageFormat.format(holder.get(locale).getString(key),args);
