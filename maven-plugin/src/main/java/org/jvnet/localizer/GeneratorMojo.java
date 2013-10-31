@@ -75,6 +75,14 @@ public class GeneratorMojo extends AbstractMojo {
      */
     protected String outputEncoding;
 
+    /**
+     * Regular expression pattern for properties keys.
+     * 
+     * @parameter default-value=".*"
+     */
+    protected String keyPattern;
+
+    @SuppressWarnings("unchecked")
     public void execute() throws MojoExecutionException, MojoFailureException {
         String pkg = project.getPackaging();
         if(pkg!=null && pkg.equals("pom"))
@@ -84,7 +92,7 @@ public class GeneratorMojo extends AbstractMojo {
             public void debug(String msg) {
                 getLog().debug(msg);
             }
-        });
+        }, keyPattern);
 
         for(Resource res : (List<Resource>)project.getResources()) {
             File baseDir = new File(res.getDirectory());

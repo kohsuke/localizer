@@ -58,9 +58,13 @@ public class Localizable implements Serializable {
         }
     }
 
+    public String getKey() {
+        return key;
+    }
+
     public String toString(Locale locale) {
         try {
-            return MessageFormat.format(holder.get(locale).getString(key),args);
+            return MessageFormat.format(holder.get(locale).getString(key),(Object[])args);
         } catch (MissingResourceException e) {
             throw new RuntimeException("Failed to localize key="+key+",args="+ asList(args),e);
         }

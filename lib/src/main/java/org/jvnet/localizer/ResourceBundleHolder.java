@@ -40,14 +40,14 @@ import java.lang.ref.WeakReference;
  */
 public final class ResourceBundleHolder implements Serializable {
     /** Need to cache, but not tie up a classloader refernce in cases of unloading */
-    private static final Map<Class, WeakReference<ResourceBundleHolder>> cache =
-            new WeakHashMap<Class, WeakReference<ResourceBundleHolder>> ();
+    private static final Map<Class<?>, WeakReference<ResourceBundleHolder>> cache =
+            new WeakHashMap<Class<?>, WeakReference<ResourceBundleHolder>> ();
 
     /**
      * Gets a {@link ResourceBundleHolder} for the given class,
      * by utilizing a cache if possible.
      */
-    public synchronized static ResourceBundleHolder get(Class clazz) {
+    public synchronized static ResourceBundleHolder get(Class<?> clazz) {
         WeakReference<ResourceBundleHolder> entry = cache.get(clazz);
         if (entry != null) {
             ResourceBundleHolder rbh = entry.get();
@@ -60,7 +60,7 @@ public final class ResourceBundleHolder implements Serializable {
     }
 
     private transient final Map<Locale,ResourceBundle> bundles = new ConcurrentHashMap<Locale,ResourceBundle>();
-    public final Class owner;
+    public final Class<?> owner;
 
     /**
      * {@link Locale} object that corresponds to the base bundle.
@@ -73,7 +73,7 @@ public final class ResourceBundleHolder implements Serializable {
      * @deprecated
      *      Use {@link #get(Class)}
      */
-    public ResourceBundleHolder(Class owner) {
+    public ResourceBundleHolder(Class<?> owner) {
         this.owner = owner;
     }
 
