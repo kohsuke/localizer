@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -56,15 +57,27 @@ public class Generator {
     private final File outputDirectory;
     private final String outputEncoding;
     private final Reporter reporter;
+    private final Pattern keyPattern;
 
     public Generator(File outputDirectory, Reporter reporter) {
         this(outputDirectory, null, reporter);
     }
 
     public Generator(File outputDirectory, String outputEncoding, Reporter reporter) {
+        this(outputDirectory, null, reporter, null);
+    }
+
+    public Generator(File outputDirectory, String outputEncoding, Reporter reporter,
+            String keyPattern) {
         this.outputDirectory = outputDirectory;
         this.outputEncoding = outputEncoding;
         this.reporter = reporter;
+
+        if (keyPattern != null && !"".equals(keyPattern)) {
+            this.keyPattern = Pattern.compile(keyPattern);
+        } else {
+            this.keyPattern = null;
+        }
     }
 
     public void generate(File baseDir, DirectoryScanner ds) throws IOException {
@@ -115,6 +128,12 @@ public class Generator {
 
             for (Entry<Object,Object> e : props.entrySet()) {
                 String key = e.getKey().toString();
+                if (keyPattern != null && !keyPattern.matcher(key).matches()) {
+                    String message = String.format(
+                            "Key \"%1$s\" does not match specified keyPattern \"%2$s\".", key,
+                            keyPattern);
+                    throw new IllegalArgumentException(message);
+                }
                 String value = e.getValue().toString();
 
                 int n = countArgs(value);

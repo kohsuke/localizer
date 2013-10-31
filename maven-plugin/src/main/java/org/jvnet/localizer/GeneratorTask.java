@@ -46,6 +46,11 @@ public class GeneratorTask extends MatchingTask {
      */
     private String encoding;
 
+    /**
+     * Regular expression pattern for properties keys.
+     */
+    private String keyPattern;
+
     public void setDir(File dir) {
         this.dir = dir;
     }
@@ -58,12 +63,16 @@ public class GeneratorTask extends MatchingTask {
         this.encoding = encoding;
     }
 
+    public void setKeyPattern(String keyPattern) {
+        this.keyPattern = keyPattern;
+    }
+
     public void execute() throws BuildException {
         Generator g = new Generator(todir, encoding, new Reporter() {
             public void debug(String msg) {
                 log(msg, Project.MSG_DEBUG);
             }
-        });
+        }, keyPattern);
 
         try {
             g.generate(dir,getDirectoryScanner(dir));
