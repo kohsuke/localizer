@@ -71,7 +71,8 @@ public class GeneratorMojo extends AbstractMojo {
      * The charset encoding of generated Java sources.
      * Default to the platform specific encoding.
      *
-     * @parameter
+     * @parameter default-value="${project.build.sourceEncoding}"
+     * @required
      */
     protected String outputEncoding;
 
