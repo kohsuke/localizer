@@ -34,7 +34,6 @@ import com.sun.codemodel.JVar;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.writer.FileCodeWriter;
-import org.apache.tools.ant.DirectoryScanner;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,53 +46,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.regex.Pattern;
 
 /**
  * @author Kohsuke Kawaguchi
  */
-public class Generator {
+public class Generator extends GeneratorBase implements ClassGenerator {
     private final JCodeModel cm = new JCodeModel();
-    private final File outputDirectory;
-    private final String outputEncoding;
-    private final Reporter reporter;
-    private final Pattern keyPattern;
 
+    public Generator(GeneratorConfig config) {
+        super(config);
+    }
+
+    @Deprecated
     public Generator(File outputDirectory, Reporter reporter) {
         this(outputDirectory, null, reporter);
     }
 
+    @Deprecated
     public Generator(File outputDirectory, String outputEncoding, Reporter reporter) {
         this(outputDirectory, null, reporter, null);
     }
 
+    @Deprecated
     public Generator(File outputDirectory, String outputEncoding, Reporter reporter,
             String keyPattern) {
-        this.outputDirectory = outputDirectory;
-        this.outputEncoding = outputEncoding;
-        this.reporter = reporter;
-
-        if (keyPattern != null && !"".equals(keyPattern)) {
-            this.keyPattern = Pattern.compile(keyPattern);
-        } else {
-            this.keyPattern = null;
-        }
-    }
-
-    public void generate(File baseDir, DirectoryScanner ds) throws IOException {
-        for( String relPath : ds.getIncludedFiles() ) {
-            File f = new File(baseDir,relPath);
-            if(!f.getName().endsWith(".properties") || f.getName().contains("_"))
-                continue;
-
-            try {
-                generate(f,relPath);
-            } catch (IOException e) {
-                IOException x = new IOException("Failed to generate a class from " + f);
-                x.initCause(e);
-                throw x;
-            }
-        }
+        this(GeneratorConfig.of(outputDirectory, outputEncoding, reporter, keyPattern));
     }
 
     public void generate(File propertyFile, String relPath) throws IOException {

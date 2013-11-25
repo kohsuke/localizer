@@ -28,10 +28,12 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.List;
 
@@ -89,7 +91,7 @@ public class GeneratorMojo extends AbstractMojo {
         if(pkg!=null && pkg.equals("pom"))
             return; // skip POM modules
 
-        Generator g = new Generator(outputDirectory, outputEncoding, new Reporter() {
+        ClassGenerator g = new Generator(outputDirectory, outputEncoding, new Reporter() {
             public void debug(String msg) {
                 getLog().debug(msg);
             }
@@ -107,25 +109,29 @@ public class GeneratorMojo extends AbstractMojo {
             for( String name : (List<String>)res.getExcludes() )
                 fs.createExclude().setName(name);
 
-            for( String relPath : fs.getDirectoryScanner(new Project()).getIncludedFiles() ) {
-                File f = new File(baseDir,relPath);
-                if(!f.getName().endsWith(".properties") || f.getName().contains("_"))
-                    continue;
-                if(fileMask!=null && !f.getName().equals(fileMask))
-                    continue;
+            try {
+                DirectoryScanner ds = fs.getDirectoryScanner(new Project());
+                g.generate(baseDir, ds, new FileFilter() {
 
-                try {
-                    g.generate(f,relPath);
-                } catch (IOException e) {
-                    throw new MojoExecutionException("Failed to generate a class from "+f,e);
-                }
+                    public boolean accept(File f) {
+                        if (!f.getName().endsWith(".properties") || f.getName().contains("_"))
+                            return false;
+
+                        if (fileMask != null && !f.getName().equals(fileMask))
+                            return false;
+
+                        return true;
+                    }
+                });
+            } catch (IOException e) {
+                throw new MojoExecutionException("Failed to generate class", e);
             }
         }
 
         try {
             g.build();
         } catch (IOException e) {
-            throw new MojoExecutionException("Failed to generate source files",e);
+            throw new MojoExecutionException("Failed to generate source file(s)",e);
         }
 
         project.addCompileSourceRoot(outputDirectory.getAbsolutePath());

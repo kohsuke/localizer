@@ -68,7 +68,7 @@ public class GeneratorTask extends MatchingTask {
     }
 
     public void execute() throws BuildException {
-        Generator g = new Generator(todir, encoding, new Reporter() {
+        ClassGenerator g = new Generator(todir, encoding, new Reporter() {
             public void debug(String msg) {
                 log(msg, Project.MSG_DEBUG);
             }
