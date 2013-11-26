@@ -35,6 +35,7 @@ import org.apache.tools.ant.types.FileSet;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 /**
@@ -85,17 +86,26 @@ public class GeneratorMojo extends AbstractMojo {
      */
     protected String keyPattern;
 
+    /**
+     * Class file generator. Implementation of org.jvnet.localizer.ClassGenerator.
+     * 
+     * @parameter default-value="org.jvnet.localizer.Generator"
+     */
+    protected String generatorClass;
+
     @SuppressWarnings("unchecked")
     public void execute() throws MojoExecutionException, MojoFailureException {
         String pkg = project.getPackaging();
         if(pkg!=null && pkg.equals("pom"))
             return; // skip POM modules
 
-        ClassGenerator g = new Generator(outputDirectory, outputEncoding, new Reporter() {
-            public void debug(String msg) {
-                getLog().debug(msg);
-            }
-        }, keyPattern);
+        GeneratorConfig config = GeneratorConfig.of(outputDirectory, outputEncoding,
+                new Reporter() {
+                    public void debug(String msg) {
+                        getLog().debug(msg);
+                    }
+                }, keyPattern);
+        ClassGenerator g = createGenerator(config);
 
         for(Resource res : (List<Resource>)project.getResources()) {
             File baseDir = new File(res.getDirectory());
@@ -135,5 +145,37 @@ public class GeneratorMojo extends AbstractMojo {
         }
 
         project.addCompileSourceRoot(outputDirectory.getAbsolutePath());
+    }
+
+    private ClassGenerator createGenerator(GeneratorConfig config) throws MojoExecutionException {
+        Class<?> clazz;
+        try {
+            clazz = Class.forName(generatorClass);
+        } catch (ClassNotFoundException e) {
+            throw new MojoExecutionException("Cannot load ClassGenerator class \"" + generatorClass
+                    + "\".");
+        }
+
+        Constructor<? extends ClassGenerator> cstr;
+        try {
+            cstr = clazz.asSubclass(ClassGenerator.class).getDeclaredConstructor(
+                    GeneratorConfig.class);
+        } catch (ClassCastException e) {
+            throw new MojoExecutionException("generatorClass \"" + generatorClass
+                    + "\" is not an implementation of ClassGenerator.");
+        } catch (NoSuchMethodException e) {
+            throw new MojoExecutionException(
+                    "GeneratorClass must have visible constructor accepting GeneratorConfig as parameter.",
+                    e);
+        } catch (SecurityException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        }
+
+        try {
+            return cstr.newInstance(config);
+        } catch (Exception e) {
+            throw new MojoExecutionException("Failed to create instance of ClassGenerator \""
+                    + generatorClass + "\".", e);
+        }
     }
 }
