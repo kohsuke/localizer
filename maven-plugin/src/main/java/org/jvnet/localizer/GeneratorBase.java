@@ -25,7 +25,11 @@ package org.jvnet.localizer;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 import org.apache.tools.ant.DirectoryScanner;
@@ -72,6 +76,61 @@ public abstract class GeneratorBase implements ClassGenerator {
                 return f.getName().endsWith(".properties") && !f.getName().contains("_");
             }
         });
+    }
+
+    public void generate(File propertyFile, String relPath) throws IOException {
+        String className = toClassName(relPath);
+
+        // up to date check
+        File sourceFile = new File(outputDirectory,className.replace('.','/')+".java");
+        if(sourceFile.exists() && sourceFile.lastModified()>propertyFile.lastModified()) {
+            reporter.debug(sourceFile+" is up to date");
+            return;
+        }
+
+        // go generate one
+        Properties props = new Properties();
+        FileInputStream in = new FileInputStream(propertyFile);
+        try {
+            props.load(in);
+        } catch (IOException e) {
+            in.close();
+        }
+
+        for (Map.Entry<Object, Object> e : props.entrySet()) {
+            String key = e.getKey().toString();
+            assertKeyPatternMatched(key);
+        }
+
+        generateImpl(className, props);
+    }
+
+    abstract protected void generateImpl(String className, Properties props);
+
+    protected String toClassName(String relPath) {
+        relPath = relPath.substring(0,relPath.length()-".properties".length());
+        return relPath.replace(File.separatorChar,'.');
+    }
+
+    protected String toJavaIdentifier(String key) {
+        // TODO: this is fairly dumb implementation
+        return key.replace('.','_').replace('-','_').replace('/','_');
+    }
+
+    protected void assertKeyPatternMatched(String key) {
+        if (keyPattern != null && !keyPattern.matcher(key).matches()) {
+            String message = String.format(
+                    "Key \"%1$s\" does not match specified keyPattern \"%2$s\".", key,
+                    keyPattern);
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    /**
+     * Counts the number of arguments.
+     */
+    protected int countArgs(String formatString) {
+        return new MessageFormat(formatString).getFormatsByArgumentIndex().length;
     }
 
     protected File getOutputDirectory() {

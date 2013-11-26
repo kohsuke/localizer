@@ -36,12 +36,10 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.writer.FileCodeWriter;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.io.PrintWriter;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -73,25 +71,7 @@ public class Generator extends GeneratorBase implements ClassGenerator {
         this(GeneratorConfig.of(outputDirectory, outputEncoding, reporter, keyPattern));
     }
 
-    public void generate(File propertyFile, String relPath) throws IOException {
-        String className = toClassName(relPath);
-
-        // up to date check
-        File sourceFile = new File(outputDirectory,className.replace('.','/')+".java");
-        if(sourceFile.exists() && sourceFile.lastModified()>propertyFile.lastModified()) {
-            reporter.debug(sourceFile+" is up to date");
-            return;
-        }
-
-        // go generate one
-        Properties props = new Properties();
-        FileInputStream in = new FileInputStream(propertyFile);
-        try {
-            props.load(in);
-        } catch (IOException e) {
-            in.close();
-        }
-
+    protected void generateImpl(String className, Properties props) throws AssertionError {
         try {
             JDefinedClass c = cm._class(className);
             c.annotate(SuppressWarnings.class).paramArray("value").param("").param("PMD");
@@ -105,12 +85,6 @@ public class Generator extends GeneratorBase implements ClassGenerator {
 
             for (Entry<Object,Object> e : props.entrySet()) {
                 String key = e.getKey().toString();
-                if (keyPattern != null && !keyPattern.matcher(key).matches()) {
-                    String message = String.format(
-                            "Key \"%1$s\" does not match specified keyPattern \"%2$s\".", key,
-                            keyPattern);
-                    throw new IllegalArgumentException(message);
-                }
                 String value = e.getValue().toString();
 
                 int n = countArgs(value);
@@ -145,30 +119,11 @@ public class Generator extends GeneratorBase implements ClassGenerator {
         } catch (JClassAlreadyExistsException e) {
             throw new AssertionError(e);
         }
-
     }
 
     private String escape(String value) {
         return value.replace("&","&amp;").replace("<","&lt;");
     }
-
-    /**
-     * Counts the number of arguments.
-     */
-    protected int countArgs(String formatString) {
-        return new MessageFormat(formatString).getFormatsByArgumentIndex().length;
-    }
-
-    protected String toJavaIdentifier(String key) {
-        // TODO: this is fairly dumb implementation
-        return key.replace('.','_').replace('-','_').replace('/','_');
-    }
-
-    protected String toClassName(String relPath) {
-        relPath = relPath.substring(0,relPath.length()-".properties".length());
-        return relPath.replace(File.separatorChar,'.');
-    }
-
 
     public JCodeModel getCodeModel() {
         return cm;
