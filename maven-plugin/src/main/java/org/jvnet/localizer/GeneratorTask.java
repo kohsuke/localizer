@@ -68,11 +68,12 @@ public class GeneratorTask extends MatchingTask {
     }
 
     public void execute() throws BuildException {
-        ClassGenerator g = new Generator(todir, encoding, new Reporter() {
+        GeneratorConfig config = GeneratorConfig.of(todir, encoding, new Reporter() {
             public void debug(String msg) {
                 log(msg, Project.MSG_DEBUG);
             }
         }, keyPattern);
+        ClassGenerator g = new Generator(config);
 
         try {
             g.generate(dir,getDirectoryScanner(dir));
