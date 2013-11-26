@@ -24,22 +24,14 @@
 package org.jvnet.localizer;
 
 import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JVar;
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.writer.FileCodeWriter;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -48,9 +40,7 @@ import java.util.Properties;
 /**
  * @author Kohsuke Kawaguchi
  */
-public class Generator extends GeneratorBase implements ClassGenerator {
-    private final JCodeModel cm = new JCodeModel();
-
+public class Generator extends CodeModelGenerator implements ClassGenerator {
     public Generator(GeneratorConfig config) {
         super(config);
     }
@@ -123,31 +113,5 @@ public class Generator extends GeneratorBase implements ClassGenerator {
 
     private String escape(String value) {
         return value.replace("&","&amp;").replace("<","&lt;");
-    }
-
-    public JCodeModel getCodeModel() {
-        return cm;
-    }
-
-    public void build() throws IOException {
-        outputDirectory.mkdirs();
-        cm.build(new CodeWriter() {
-            private final CodeWriter delegate = new FileCodeWriter(outputDirectory, outputEncoding);
-
-            public Writer openSource(JPackage pkg, String fileName) throws IOException {
-                super.encoding = outputEncoding;
-                Writer w = super.openSource(pkg, fileName);
-                new PrintWriter(w).println("// CHECKSTYLE:OFF");
-                return w;
-            }
-
-            public void close() throws IOException {
-                delegate.close();
-            }
-
-            public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
-                return delegate.openBinary(pkg, fileName);
-            }
-        });
     }
 }
