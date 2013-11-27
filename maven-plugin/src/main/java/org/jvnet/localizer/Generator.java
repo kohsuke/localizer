@@ -24,97 +24,44 @@
 package org.jvnet.localizer;
 
 import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JVar;
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.writer.FileCodeWriter;
-import org.apache.tools.ant.DirectoryScanner;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
-import java.io.PrintWriter;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.regex.Pattern;
 
 /**
  * @author Kohsuke Kawaguchi
  */
-public class Generator {
-    private final JCodeModel cm = new JCodeModel();
-    private final File outputDirectory;
-    private final String outputEncoding;
-    private final Reporter reporter;
-    private final Pattern keyPattern;
+public class Generator extends CodeModelGenerator implements ClassGenerator {
+    public Generator(GeneratorConfig config) {
+        super(config);
+    }
 
+    @Deprecated
     public Generator(File outputDirectory, Reporter reporter) {
         this(outputDirectory, null, reporter);
     }
 
+    @Deprecated
     public Generator(File outputDirectory, String outputEncoding, Reporter reporter) {
         this(outputDirectory, null, reporter, null);
     }
 
+    @Deprecated
     public Generator(File outputDirectory, String outputEncoding, Reporter reporter,
             String keyPattern) {
-        this.outputDirectory = outputDirectory;
-        this.outputEncoding = outputEncoding;
-        this.reporter = reporter;
-
-        if (keyPattern != null && !"".equals(keyPattern)) {
-            this.keyPattern = Pattern.compile(keyPattern);
-        } else {
-            this.keyPattern = null;
-        }
+        this(GeneratorConfig.of(outputDirectory, outputEncoding, reporter, keyPattern));
     }
 
-    public void generate(File baseDir, DirectoryScanner ds) throws IOException {
-        for( String relPath : ds.getIncludedFiles() ) {
-            File f = new File(baseDir,relPath);
-            if(!f.getName().endsWith(".properties") || f.getName().contains("_"))
-                continue;
-
-            try {
-                generate(f,relPath);
-            } catch (IOException e) {
-                IOException x = new IOException("Failed to generate a class from " + f);
-                x.initCause(e);
-                throw x;
-            }
-        }
-    }
-
-    public void generate(File propertyFile, String relPath) throws IOException {
-        String className = toClassName(relPath);
-
-        // up to date check
-        File sourceFile = new File(outputDirectory,className.replace('.','/')+".java");
-        if(sourceFile.exists() && sourceFile.lastModified()>propertyFile.lastModified()) {
-            reporter.debug(sourceFile+" is up to date");
-            return;
-        }
-
-        // go generate one
-        Properties props = new Properties();
-        FileInputStream in = new FileInputStream(propertyFile);
-        try {
-            props.load(in);
-        } catch (IOException e) {
-            in.close();
-        }
-
+    protected void generateImpl(String className, Properties props) throws AssertionError {
         try {
             JDefinedClass c = cm._class(className);
             c.annotate(SuppressWarnings.class).paramArray("value").param("").param("PMD");
@@ -128,12 +75,6 @@ public class Generator {
 
             for (Entry<Object,Object> e : props.entrySet()) {
                 String key = e.getKey().toString();
-                if (keyPattern != null && !keyPattern.matcher(key).matches()) {
-                    String message = String.format(
-                            "Key \"%1$s\" does not match specified keyPattern \"%2$s\".", key,
-                            keyPattern);
-                    throw new IllegalArgumentException(message);
-                }
                 String value = e.getValue().toString();
 
                 int n = countArgs(value);
@@ -168,54 +109,9 @@ public class Generator {
         } catch (JClassAlreadyExistsException e) {
             throw new AssertionError(e);
         }
-
     }
 
     private String escape(String value) {
         return value.replace("&","&amp;").replace("<","&lt;");
-    }
-
-    /**
-     * Counts the number of arguments.
-     */
-    protected int countArgs(String formatString) {
-        return new MessageFormat(formatString).getFormatsByArgumentIndex().length;
-    }
-
-    protected String toJavaIdentifier(String key) {
-        // TODO: this is fairly dumb implementation
-        return key.replace('.','_').replace('-','_').replace('/','_');
-    }
-
-    protected String toClassName(String relPath) {
-        relPath = relPath.substring(0,relPath.length()-".properties".length());
-        return relPath.replace(File.separatorChar,'.');
-    }
-
-
-    public JCodeModel getCodeModel() {
-        return cm;
-    }
-
-    public void build() throws IOException {
-        outputDirectory.mkdirs();
-        cm.build(new CodeWriter() {
-            private final CodeWriter delegate = new FileCodeWriter(outputDirectory, outputEncoding);
-
-            public Writer openSource(JPackage pkg, String fileName) throws IOException {
-                super.encoding = outputEncoding;
-                Writer w = super.openSource(pkg, fileName);
-                new PrintWriter(w).println("// CHECKSTYLE:OFF");
-                return w;
-            }
-
-            public void close() throws IOException {
-                delegate.close();
-            }
-
-            public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
-                return delegate.openBinary(pkg, fileName);
-            }
-        });
     }
 }
