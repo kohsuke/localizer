@@ -64,7 +64,7 @@ public class Generator extends CodeModelGenerator implements ClassGenerator {
     protected void generateImpl(String className, Properties props) throws AssertionError {
         try {
             JDefinedClass c = cm._class(className);
-            c.annotate(SuppressWarnings.class).paramArray("value").param("").param("PMD");
+            c.annotate(SuppressWarnings.class).paramArray("value").param("").param("PMD").param("all");
 
             // [RESULT]
             // private static final ResourceBundleHolder holder = BundleHolder.get(Messages.class);
