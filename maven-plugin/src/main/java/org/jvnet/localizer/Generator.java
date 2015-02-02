@@ -160,7 +160,7 @@ public class Generator extends CodeModelGenerator implements ClassGenerator {
     }
 
     private String code(String value) {
-        return String.format("{@code %s}", escape(value));
+        return String.format("{@code %s}", value);
     }
 
     private String escape(String value) {
