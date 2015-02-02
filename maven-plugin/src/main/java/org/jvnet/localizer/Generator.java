@@ -39,16 +39,11 @@ import java.text.Format;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.TreeMap;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -106,11 +101,11 @@ public class Generator extends CodeModelGenerator implements ClassGenerator {
                                 positionalName(i), i));
                     } else if (formats[i] instanceof DateFormat) {
                         params.put(argName,
-                                String.format("%s format parameter, {@code {%d}}, a {@link Date}.",
+                                String.format("%s format parameter, {@code {%d}}, a {@link java.util.Date}.",
                                         positionalName(i), i));
                     } else {
                         params.put(argName, String.format(
-                                "%s format parameter, {@code {%d}}, as {@link Object#toString()}.",
+                                "%s format parameter, {@code {%d}}, as {@link String#valueOf(Object)}.",
                                 positionalName(i), i));
                     }
                 }
@@ -120,11 +115,7 @@ public class Generator extends CodeModelGenerator implements ClassGenerator {
                     inv.arg(arg);
                 m.body()._return(inv);
 
-                m.javadoc().add(WordUtils.wrap(String.format(
-                        "Returns the formatted message string for key %s from the bundle using the {@link org.jvnet"
-                                + ".localizer.LocaleProvider#getLocale()}, in the default {@link java.util.Locale} the"
-                                + " message string is %s.",
-                        code(key), code(value)), 70));
+                m.javadoc().add(WordUtils.wrap(String.format("Key %s: %s.", code(key), code(value)), 70));
                 for (Map.Entry<String,String> p: params.entrySet()) {
                     m.javadoc().addParam(p.getKey()).add(p.getValue());
                 }
@@ -142,11 +133,11 @@ public class Generator extends CodeModelGenerator implements ClassGenerator {
                                 positionalName(i), i));
                     } else if (formats[i] instanceof DateFormat) {
                         params.put(argName,
-                                String.format("%s format parameter, {@code {%d}}, a {@link Date}.",
+                                String.format("%s format parameter, {@code {%d}}, a {@link java.util.Date}.",
                                         positionalName(i), i));
                     } else {
                         params.put(argName, String.format(
-                                "%s format parameter, {@code {%d}}, as {@link Object#toString()}.",
+                                "%s format parameter, {@code {%d}}, as {@link String#valueOf(Object)}.",
                                 positionalName(i), i));
                     }
                 }
@@ -156,10 +147,7 @@ public class Generator extends CodeModelGenerator implements ClassGenerator {
                     inv.arg(arg);
                 m.body()._return(inv);
 
-                m.javadoc().add(WordUtils.wrap(String.format(
-                        "Returns a {@link Localizable} of the formatted message string for key %s from the bundle,"
-                                + " in the default {@link java.util.Locale} the message string is %s.",
-                        code(key), code(value)), 70));
+                m.javadoc().add(WordUtils.wrap(String.format("Key %s: %s.", code(key), code(value)), 70));
                 for (Map.Entry<String,String> p: params.entrySet()) {
                     m.javadoc().addParam(p.getKey()).add(p.getValue());
                 }
@@ -180,10 +168,11 @@ public class Generator extends CodeModelGenerator implements ClassGenerator {
     }
 
     private String positionalName(int i) {
-        if (i >= 9 && i < 20) {
+        if (i%100 >= 9 && i%100 < 20) {
+            // it's not 11st, 12nd, 13rd or 111st, 112nd, 113rd, etc
             return String.format("%dth", i+1);
         }
-        switch (i) {
+        switch (i%10) {
             case 0:
                 return String.format("%dst", i+1);
             case 1:
