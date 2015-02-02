@@ -48,7 +48,7 @@ public class GeneratorMojo extends AbstractMojo {
     /**
      * The maven project.
      *
-     * @parameter expression="${project}"
+     * @parameter property="project"
      * @required
      * @readonly
      */
@@ -81,17 +81,24 @@ public class GeneratorMojo extends AbstractMojo {
 
     /**
      * Regular expression pattern for properties keys.
-     * 
+     *
      * @parameter default-value=".*"
      */
     protected String keyPattern;
 
     /**
      * Class file generator. Implementation of org.jvnet.localizer.ClassGenerator.
-     * 
+     *
      * @parameter default-value="org.jvnet.localizer.Generator"
      */
     protected String generatorClass;
+
+    /**
+     * Generates strict types for messages that format dates or numbers
+     *
+     * @parameter
+     */
+    protected boolean strictTypes;
 
     @SuppressWarnings("unchecked")
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -104,7 +111,7 @@ public class GeneratorMojo extends AbstractMojo {
                     public void debug(String msg) {
                         getLog().debug(msg);
                     }
-                }, keyPattern);
+                }, keyPattern, strictTypes);
         ClassGenerator g = createGenerator(config);
 
         for(Resource res : (List<Resource>)project.getResources()) {
