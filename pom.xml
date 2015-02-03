@@ -10,7 +10,7 @@
   <groupId>org.jvnet.localizer</groupId>
   <artifactId>localizer-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.20-SNAPSHOT</version>
+  <version>1.20</version>
   <name>Localizer parent POM</name>
   <modules>
     <module>lib</module>
