@@ -51,6 +51,11 @@ public class GeneratorTask extends MatchingTask {
      */
     private String keyPattern;
 
+    /**
+     * Generates strict types for messages that format dates or numbers.
+     */
+    private boolean strictTypes;
+
     public void setDir(File dir) {
         this.dir = dir;
     }
@@ -67,12 +72,16 @@ public class GeneratorTask extends MatchingTask {
         this.keyPattern = keyPattern;
     }
 
+    public void setStrictTypes(boolean strictTypes) {
+        this.strictTypes = strictTypes;
+    }
+
     public void execute() throws BuildException {
         GeneratorConfig config = GeneratorConfig.of(todir, encoding, new Reporter() {
             public void debug(String msg) {
                 log(msg, Project.MSG_DEBUG);
             }
-        }, keyPattern);
+        }, keyPattern, strictTypes);
         ClassGenerator g = new Generator(config);
 
         try {

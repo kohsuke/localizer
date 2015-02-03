@@ -1,5 +1,10 @@
+*.iml
+*.ipr
+*.iws
+.idea/
+
 .classpath
 .project
-.settings
-/lib/target
-/maven-plugin/target
+.settings/
+
+target/

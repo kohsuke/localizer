@@ -27,7 +27,11 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.Format;
 import java.text.MessageFormat;
+import java.text.NumberFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -40,12 +44,14 @@ public abstract class GeneratorBase implements ClassGenerator {
     protected final String outputEncoding;
     protected final Reporter reporter;
     protected final Pattern keyPattern;
+    protected final boolean strictTypes;
 
     public GeneratorBase(GeneratorConfig config) {
         outputDirectory = config.getOutputDirectory();
         outputEncoding = config.getOutputEncoding();
         reporter = config.getReporter();
         keyPattern = config.getKeyPattern();
+        strictTypes = config.isStrictTypes();
     }
 
     public void generate(File baseDir, DirectoryScanner ds, FileFilter filter) throws IOException {
@@ -124,6 +130,14 @@ public abstract class GeneratorBase implements ClassGenerator {
                     keyPattern);
             throw new IllegalArgumentException(message);
         }
+    }
+
+    protected Class<?> inferType(Format format) {
+        if (strictTypes) {
+            if (format instanceof DateFormat) return Date.class;
+            if (format instanceof NumberFormat) return Number.class;
+        }
+        return Object.class;
     }
 
     /**

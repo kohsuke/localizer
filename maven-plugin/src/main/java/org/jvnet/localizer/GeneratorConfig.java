@@ -9,6 +9,7 @@ public class GeneratorConfig {
     private String outputEncoding;
     private Reporter reporter;
     private Pattern keyPattern;
+    private boolean strictTypes;
 
     public File getOutputDirectory() {
         return outputDirectory;
@@ -50,13 +51,26 @@ public class GeneratorConfig {
         }
     }
 
+    public boolean isStrictTypes() {
+        return strictTypes;
+    }
+
+    public void setStrictTypes(boolean strictTypes) {
+        this.strictTypes = strictTypes;
+    }
+
     public static GeneratorConfig of(File outputDirectory, String outputEncoding,
             Reporter reporter, String keyPattern) {
+        return of(outputDirectory, outputEncoding, reporter, keyPattern, false);
+    }
+    public static GeneratorConfig of(File outputDirectory, String outputEncoding,
+            Reporter reporter, String keyPattern, boolean strictTypes) {
         GeneratorConfig config = new GeneratorConfig();
         config.setOutputDirectory(outputDirectory);
         config.setOutputEncoding(outputEncoding);
         config.setReporter(reporter);
         config.setKeyPattern(keyPattern);
+        config.setStrictTypes(strictTypes);
         return config;
     }
 }
