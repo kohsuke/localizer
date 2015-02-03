@@ -48,7 +48,7 @@ public class GeneratorMojo extends AbstractMojo {
     /**
      * The maven project.
      *
-     * @parameter property="project"
+     * @parameter expression="${project}"
      * @required
      * @readonly
      */
