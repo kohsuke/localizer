@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.ObjectStreamException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -107,7 +108,9 @@ public final class ResourceBundleHolder implements Serializable {
             if(res!=null) {
                 // found property file for this locale.
                 try {
-                    InputStream is = res.openStream();
+                    URLConnection uc = res.openConnection();
+                    uc.setUseCaches(false);
+                    InputStream is = uc.getInputStream();
                     ResourceBundleImpl bundle = new ResourceBundleImpl(is);
                     is.close();
                     rb = bundle;
