@@ -45,6 +45,7 @@ public abstract class GeneratorBase implements ClassGenerator {
     protected final Reporter reporter;
     protected final Pattern keyPattern;
     protected final boolean strictTypes;
+    protected final boolean accessModifierAnnotations;
 
     public GeneratorBase(GeneratorConfig config) {
         outputDirectory = config.getOutputDirectory();
@@ -52,6 +53,7 @@ public abstract class GeneratorBase implements ClassGenerator {
         reporter = config.getReporter();
         keyPattern = config.getKeyPattern();
         strictTypes = config.isStrictTypes();
+        accessModifierAnnotations = config.isAccessModifierAnnotations();
     }
 
     public void generate(File baseDir, DirectoryScanner ds, FileFilter filter) throws IOException {

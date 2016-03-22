@@ -32,6 +32,8 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JVar;
 import org.apache.commons.lang3.text.WordUtils;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -73,6 +75,9 @@ public class Generator extends CodeModelGenerator implements ClassGenerator {
         try {
             JDefinedClass c = cm._class(className);
             c.annotate(SuppressWarnings.class).paramArray("value").param("").param("PMD").param("all");
+            if (accessModifierAnnotations) {
+                c.annotate(Restricted.class).param("value", NoExternalUse.class);
+            }
             c.javadoc().add("Generated localization support class.");
 
             // [RESULT]
