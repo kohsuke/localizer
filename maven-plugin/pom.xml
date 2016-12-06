@@ -51,5 +51,10 @@
       <artifactId>localizer</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.kohsuke</groupId>
+      <artifactId>access-modifier-annotation</artifactId>
+      <version>1.4</version>
+    </dependency>
   </dependencies>
 </project>

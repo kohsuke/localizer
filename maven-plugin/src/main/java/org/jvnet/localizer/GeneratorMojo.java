@@ -100,6 +100,13 @@ public class GeneratorMojo extends AbstractMojo {
      */
     protected boolean strictTypes;
 
+    /**
+     * Whether to annotate Localizer-generated classes with @Restricted(NoExternalUse.class) from access-modifier
+     *
+     * @parameter
+     */
+    protected boolean accessModifierAnnotations;
+
     @SuppressWarnings("unchecked")
     public void execute() throws MojoExecutionException, MojoFailureException {
         String pkg = project.getPackaging();
@@ -111,7 +118,7 @@ public class GeneratorMojo extends AbstractMojo {
                     public void debug(String msg) {
                         getLog().debug(msg);
                     }
-                }, keyPattern, strictTypes);
+                }, keyPattern, strictTypes, accessModifierAnnotations);
         ClassGenerator g = createGenerator(config);
 
         for(Resource res : (List<Resource>)project.getResources()) {

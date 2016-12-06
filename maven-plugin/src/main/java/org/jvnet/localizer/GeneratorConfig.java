@@ -10,6 +10,15 @@ public class GeneratorConfig {
     private Reporter reporter;
     private Pattern keyPattern;
     private boolean strictTypes;
+    private boolean accessModifierAnnotations;
+
+    public boolean isAccessModifierAnnotations() {
+        return accessModifierAnnotations;
+    }
+
+    public void setAccessModifierAnnotations(boolean accessModifierAnnotations) {
+        this.accessModifierAnnotations = accessModifierAnnotations;
+    }
 
     public File getOutputDirectory() {
         return outputDirectory;
@@ -65,12 +74,18 @@ public class GeneratorConfig {
     }
     public static GeneratorConfig of(File outputDirectory, String outputEncoding,
             Reporter reporter, String keyPattern, boolean strictTypes) {
+        return of(outputDirectory, outputEncoding, reporter, keyPattern, strictTypes, false);
+    }
+
+    public static GeneratorConfig of(File outputDirectory, String outputEncoding,
+                                     Reporter reporter, String keyPattern, boolean strictTypes, boolean accessModifierAnnotations) {
         GeneratorConfig config = new GeneratorConfig();
         config.setOutputDirectory(outputDirectory);
         config.setOutputEncoding(outputEncoding);
         config.setReporter(reporter);
         config.setKeyPattern(keyPattern);
         config.setStrictTypes(strictTypes);
+        config.setAccessModifierAnnotations(accessModifierAnnotations);
         return config;
     }
 }
