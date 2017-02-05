@@ -25,8 +25,10 @@ package org.jvnet.localizer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.io.ObjectStreamException;
+import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.MessageFormat;
@@ -111,7 +113,9 @@ public final class ResourceBundleHolder implements Serializable {
                     URLConnection uc = res.openConnection();
                     uc.setUseCaches(false);
                     InputStream is = uc.getInputStream();
-                    ResourceBundleImpl bundle = new ResourceBundleImpl(is);
+                    InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+                    ResourceBundleImpl bundle = new ResourceBundleImpl(isr);
+                    isr.close();
                     is.close();
                     rb = bundle;
                     if(next!=null)
@@ -143,6 +147,10 @@ public final class ResourceBundleHolder implements Serializable {
     static class ResourceBundleImpl extends PropertyResourceBundle {
         ResourceBundleImpl(InputStream stream) throws IOException {
             super(stream);
+        }
+
+        ResourceBundleImpl(Reader reader) throws IOException {
+            super(reader);
         }
 
         protected void setParent(ResourceBundle parent) {

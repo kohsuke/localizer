@@ -26,4 +26,12 @@ public class LocaleTest extends TestCase {
         assertEquals("german",h.get(Locale.GERMANY).getString("abc"));
         assertEquals("german",h.get(Locale.GERMAN).getString("abc"));
     }
+
+    public void testUtf8() throws Exception {
+        Locale.setDefault(Locale.JAPANESE);
+        @SuppressWarnings("deprecation")        // not to use a cache.
+        ResourceBundleHolder h = new ResourceBundleHolder(LocaleTest.class);
+        assertEquals("日本語", h.format("abc"));
+    }
+
 }

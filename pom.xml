@@ -11,6 +11,12 @@
     <!--module>test</module-->
   </modules>
 
+  <properties>
+    <java.level>6</java.level>
+    <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
   <scm>
     <connection>scm:git:git@github.com/kohsuke/localizer.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/kohsuke/localizer.git</developerConnection>
@@ -30,8 +36,8 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
+          <source>1.${java.level}</source>
+          <target>1.${java.level}</target>
         </configuration>
       </plugin>
       <plugin>
