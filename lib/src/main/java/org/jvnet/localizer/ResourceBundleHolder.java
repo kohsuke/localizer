@@ -104,7 +104,7 @@ public final class ResourceBundleHolder implements Serializable {
             Locale next = getBaseLocale(locale);
 
             String s = locale.toString();
-            URL res = owner.getResource(owner.getSimpleName()+(s.length()>0?'_'+s:"")+".properties");
+            URL res = ResourceProvider.findResource(owner.getSimpleName()+(s.length()>0?'_'+s:"")+".properties", owner);
             if(res!=null) {
                 // found property file for this locale.
                 try {
