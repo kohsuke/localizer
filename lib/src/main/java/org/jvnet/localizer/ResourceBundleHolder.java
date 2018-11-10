@@ -169,4 +169,8 @@ public final class ResourceBundleHolder implements Serializable {
     public String format(String key, Object... args) {
         return MessageFormat.format(get(LocaleProvider.getLocale()).getString(key),args);
     }
+
+    public static void clearCache() {
+        cache.clear();
+    }
 }
