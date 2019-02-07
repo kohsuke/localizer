@@ -10,10 +10,18 @@ import java.net.URL;
  */
 public abstract class ResourceProvider {
     /**
-     * Return the resource URL specified by the given String
+     * Return the resource URL specified by the given String if it is to be overwritten.
+     * @param name the name of the resource
+     * @param resourceBundle the class for which a resource should be loaded
+     * @return the resource, or {@code null} if no overwritten resource is found
      */
     public abstract URL getResource(String name, Class<?> resourceBundle);
 
+    /**
+     * Set a new system-wide {@link ResourceProvider}.
+     * @param p singleton instance
+     * @throws IllegalArgumentException if the parameter is {@code null}.
+     */
     public static void setProvider(ResourceProvider p) {
         if (p == null) {
             throw new IllegalArgumentException();
@@ -37,6 +45,9 @@ public abstract class ResourceProvider {
         return theInstance.getResource(name, resourceBundleClass);
     }
 
+    /**
+     * The default resource provider which just calls {@link Class#getResource(String)}.
+     */
     public static final ResourceProvider DEFAULT = new ResourceProvider() {
         public URL getResource(String name, Class<?> resourceBundleClass) {
             return resourceBundleClass.getResource(name);

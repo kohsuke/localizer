@@ -170,7 +170,10 @@ public final class ResourceBundleHolder implements Serializable {
         return MessageFormat.format(get(LocaleProvider.getLocale()).getString(key),args);
     }
 
-    public static void clearCache() {
+    /**
+     * Clear the cache used by {@link #get(Class)}. This is useful in case of changes to {@link ResourceProvider}.
+     */
+    public synchronized static void clearCache() {
         cache.clear();
     }
 }
