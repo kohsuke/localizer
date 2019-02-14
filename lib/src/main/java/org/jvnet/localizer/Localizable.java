@@ -51,9 +51,9 @@ public class Localizable implements Serializable {
             } else {
                 // MessageFormat only supports formats of "number", "date", "time" and "choice"
                 // All of which will be formatting objects that must be Serializable
-                // Anything else will just have it's toString() method invoked
+                // Anything else non-null will just have it's toString() method invoked
                 // by MessageFormat, so we'll just call toString up front.
-                this.args[i] = args[i].toString();
+                this.args[i] = String.valueOf(args[i]);
             }
         }
     }
