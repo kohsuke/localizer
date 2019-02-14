@@ -104,7 +104,7 @@ public final class ResourceBundleHolder implements Serializable {
             Locale next = getBaseLocale(locale);
 
             String s = locale.toString();
-            URL res = owner.getResource(owner.getSimpleName()+(s.length()>0?'_'+s:"")+".properties");
+            URL res = ResourceProvider.findResource(owner.getSimpleName()+(s.length()>0?'_'+s:"")+".properties", owner);
             if(res!=null) {
                 // found property file for this locale.
                 try {
@@ -168,5 +168,12 @@ public final class ResourceBundleHolder implements Serializable {
      */
     public String format(String key, Object... args) {
         return MessageFormat.format(get(LocaleProvider.getLocale()).getString(key),args);
+    }
+
+    /**
+     * Clear the cache used by {@link #get(Class)}. This is useful in case of changes to {@link ResourceProvider}.
+     */
+    public synchronized static void clearCache() {
+        cache.clear();
     }
 }
