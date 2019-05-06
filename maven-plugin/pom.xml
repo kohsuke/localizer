@@ -6,7 +6,7 @@
     <version>1.27-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>maven-localizer-plugin</artifactId>
+  <artifactId>localizer-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   <name>Localizer generator</name>
 

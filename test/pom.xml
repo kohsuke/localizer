@@ -13,7 +13,7 @@
     <plugins>
       <plugin>
         <groupId>org.jvnet.localizer</groupId>
-        <artifactId>maven-localizer-plugin</artifactId>
+        <artifactId>localizer-plugin</artifactId>
         <executions>
           <execution>
             <goals>
