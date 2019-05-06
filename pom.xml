@@ -11,6 +11,10 @@
     <!--module>test</module-->
   </modules>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
   <scm>
     <connection>scm:git:git@github.com/kohsuke/localizer.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/kohsuke/localizer.git</developerConnection>
