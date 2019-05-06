@@ -37,6 +37,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -65,10 +66,21 @@ public class GeneratorMojo extends AbstractMojo {
     /**
      * Additional file name mask like "Messages.properties" to further
      * restrict the resource processing.
+     * Should be used mutually exclusively with fileMaskRegexp.
      *
      * @parameter
      */
     protected String fileMask;
+    
+    /**
+     * Additional file name mask regexp like ".*Messages\.properties" to further
+     * restrict the resource processing.
+     * Must be a valid regexp.
+     * Should be used mutually exclusively with fileMask.
+     *
+     * @parameter
+     */
+    protected String fileMaskRegexp;
 
     /**
      * The charset encoding of generated Java sources.
@@ -142,6 +154,9 @@ public class GeneratorMojo extends AbstractMojo {
                             return false;
 
                         if (fileMask != null && !f.getName().equals(fileMask))
+                            return false;
+    
+                        if (fileMaskRegexp != null && !f.getName().matches(fileMaskRegexp))
                             return false;
 
                         return true;
