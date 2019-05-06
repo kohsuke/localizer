@@ -58,8 +58,8 @@
 
   <repositories>
     <repository>
-      <id>java.net2</id>
-      <url>http://download.java.net/maven/2/</url>
+      <id>jenkins-repo</id>
+      <url>https://repo.jenkins-ci.org/releases/</url>
     </repository>
   </repositories>
 
