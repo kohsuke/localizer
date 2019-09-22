@@ -151,7 +151,7 @@ public final class ResourceBundleHolder implements Serializable {
     }
 
     protected ResourceBundleImpl getFromXml(String basename) {
-        URL res = ResourceProvider.findResource(basename + ".xml", owner);
+        URL res = ResourceProvider.findResource(basename + ".properties.xml", owner);
         if (res == null) {
             return null;
         }
