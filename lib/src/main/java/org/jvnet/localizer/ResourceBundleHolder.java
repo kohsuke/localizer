@@ -23,6 +23,8 @@
  */
 package org.jvnet.localizer;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -104,24 +106,17 @@ public final class ResourceBundleHolder implements Serializable {
             Locale next = getBaseLocale(locale);
 
             String s = locale.toString();
-            URL res = ResourceProvider.findResource(owner.getSimpleName()+(s.length()>0?'_'+s:"")+".properties", owner);
-            if(res!=null) {
-                // found property file for this locale.
-                try {
-                    URLConnection uc = res.openConnection();
-                    uc.setUseCaches(false);
-                    InputStream is = uc.getInputStream();
-                    ResourceBundleImpl bundle = new ResourceBundleImpl(is);
-                    is.close();
-                    rb = bundle;
-                    if(next!=null)
-                    bundle.setParent(get(next));
-                    bundles.put(locale,bundle);
-                } catch (IOException e) {
-                    MissingResourceException x = new MissingResourceException("Unable to load resource " + res, owner.getName(), null);
-                    x.initCause(e);
-                    throw x;
-                }
+            ResourceBundleImpl bundle = null;
+            String basename = owner.getSimpleName()+(s.length()>0?'_'+s:"");
+            bundle = getFromProperties(basename);
+            if (bundle == null) {
+                bundle = getFromXml(basename);
+            }
+            if(bundle != null) {
+                rb = bundle;
+                if(next!=null)
+                bundle.setParent(get(next));
+                bundles.put(locale,bundle);
             } else {
                 if(next!=null)
                     // no matching resource, so just use the locale for the base
@@ -133,6 +128,55 @@ public final class ResourceBundleHolder implements Serializable {
 
         }
         return rb;
+    }
+
+    protected ResourceBundleImpl getFromProperties(String basename) {
+        URL res = ResourceProvider.findResource(basename + ".properties", owner);
+        if (res == null) {
+            return null;
+        }
+        // found property file for this locale.
+        try {
+            URLConnection uc = res.openConnection();
+            uc.setUseCaches(false);
+            InputStream is = uc.getInputStream();
+            ResourceBundleImpl bundle = new ResourceBundleImpl(is);
+            is.close();
+            return bundle;
+        } catch (IOException e) {
+            MissingResourceException x = new MissingResourceException("Unable to load resource " + res, owner.getName(), null);
+            x.initCause(e);
+            throw x;
+        }
+    }
+
+    protected ResourceBundleImpl getFromXml(String basename) {
+        URL res = ResourceProvider.findResource(basename + ".xml", owner);
+        if (res == null) {
+            return null;
+        }
+        // found property file for this locale.
+        try {
+            URLConnection uc = res.openConnection();
+            uc.setUseCaches(false);
+            InputStream is = uc.getInputStream();
+            Properties props = new Properties();
+            props.loadFromXML(is);
+            is.close();
+
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            props.store(bout, "");
+            bout.close();
+
+            ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray());
+            ResourceBundleImpl bundle = new ResourceBundleImpl(bin);
+            bin.close();
+            return bundle;
+        } catch (IOException e) {
+            MissingResourceException x = new MissingResourceException("Unable to load resource " + res, owner.getName(), null);
+            x.initCause(e);
+            throw x;
+        }
     }
 
     @Override
