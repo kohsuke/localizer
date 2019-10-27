@@ -138,10 +138,19 @@ public class GeneratorMojo extends AbstractMojo {
                 g.generate(baseDir, ds, new FileFilter() {
 
                     public boolean accept(File f) {
-                        if (!f.getName().endsWith(".properties") || f.getName().contains("_"))
+                        if (
+                            (
+                                !f.getName().endsWith(".properties")
+                                && !f.getName().endsWith(".properties.xml")
+                            )
+                            || f.getName().contains("_")
+                        )
                             return false;
 
-                        if (fileMask != null && !f.getName().equals(fileMask))
+                        if (fileMask != null
+                            && !f.getName().equals(fileMask)
+                            && !f.getName().equals(fileMask + ".xml")
+                        )
                             return false;
 
                         return true;

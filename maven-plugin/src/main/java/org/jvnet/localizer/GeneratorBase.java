@@ -81,7 +81,13 @@ public abstract class GeneratorBase implements ClassGenerator {
     public void generate(File baseDir, DirectoryScanner ds) throws IOException {
         generate(baseDir, ds, new FileFilter() {
             public boolean accept(File f) {
-                return f.getName().endsWith(".properties") && !f.getName().contains("_");
+                return (
+                    (
+                        f.getName().endsWith(".properties")
+                        || f.getName().endsWith(".properties.xml")
+                    )
+                    && !f.getName().contains("_")
+                );
             }
         });
     }
@@ -100,7 +106,11 @@ public abstract class GeneratorBase implements ClassGenerator {
         Properties props = new Properties();
         FileInputStream in = new FileInputStream(propertyFile);
         try {
-            props.load(in);
+            if (propertyFile.getName().endsWith(".xml")) {
+                props.loadFromXML(in);
+            } else {
+                props.load(in);
+            }
         } catch (IOException e) {
             in.close();
         }
@@ -116,7 +126,11 @@ public abstract class GeneratorBase implements ClassGenerator {
     abstract protected void generateImpl(String className, Properties props);
 
     protected String toClassName(String relPath) {
-        relPath = relPath.substring(0,relPath.length()-".properties".length());
+        if (relPath.endsWith(".xml")) {
+            relPath = relPath.substring(0,relPath.length()-".properties.xml".length());
+        } else {
+            relPath = relPath.substring(0,relPath.length()-".properties".length());
+        }
         return relPath.replace(File.separatorChar,'.');
     }
 
