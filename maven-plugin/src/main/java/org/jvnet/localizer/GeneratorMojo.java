@@ -42,13 +42,14 @@ import java.util.List;
  * @author Kohsuke Kawaguchi
  * @goal generate
  * @phase generate-sources
+ * @threadSafe true
  */
 public class GeneratorMojo extends AbstractMojo {
 
     /**
      * The maven project.
      *
-     * @parameter expression="${project}"
+     * @parameter default-value="${project}"
      * @required
      * @readonly
      */
