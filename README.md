@@ -39,7 +39,7 @@ In this way, you can get auto-completion on choosing the right message, you'll n
 ## Maven
 For projects built with Maven, add the following entries to your POM.
 
-For the list of configurations to the ````maven-localizer-plugin````, refer to [this document](https://github.com/AODocs/localizer/blob/master/maven-plugin/src/main/java/org/jvnet/localizer/GeneratorMojo.java):
+For the list of configurations to the ````localizer-maven-plugin````, refer to [this document](https://github.com/AODocs/localizer/blob/master/maven-plugin/src/main/java/org/jvnet/localizer/GeneratorMojo.java):
 ````
 <build>
     ...
@@ -47,7 +47,8 @@ For the list of configurations to the ````maven-localizer-plugin````, refer to [
         ...
         <plugin>
             <groupId>org.jvnet.localizer</groupId>
-            <artifactId>maven-localizer-plugin</artifactId>
+            <artifactId>localizer-maven-plugin</artifactId>
+            <version>1.28</version>
             <executions>
                 <execution>
                     <goals>
@@ -62,7 +63,7 @@ For the list of configurations to the ````maven-localizer-plugin````, refer to [
     <dependency>
         <groupId>org.jvnet.localizer</groupId>
         <artifactId>localizer</artifactId>
-        <version>1.26</version>
+        <version>1.28</version>
     </dependency>
     ...
 </dependencies>
@@ -87,7 +88,7 @@ For projects built with Ant, use the following task to generate source files:
 ```` 
 <taskdef name="localizer-gen" classname="org.jvnet.localizer.GeneratorTask">
     <classpath>
-        <pathelement location="path/to/maven-localizer-plugin.jar"/>
+        <pathelement location="path/to/localizer-maven-plugin.jar"/>
         <pathelement location="path/to/localizer.jar"/>
     </classpath>
 </taskdef>

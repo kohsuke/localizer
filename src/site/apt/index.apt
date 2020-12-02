@@ -44,7 +44,7 @@ public class Messages {
 How to use this?
 
     For projects built with Maven, add the following entries to your POM.
-    For the list of configurations to the <<<maven-localizer-plugin>>>,
+    For the list of configurations to the <<<localizer-maven-plugin>>>,
     refer to {{{#}this document}}:
 
 -----------------------------------------
@@ -54,7 +54,7 @@ How to use this?
     ...
     <plugin>
       <groupId>org.jvnet.localizer</groupId>
-      <artifactId>maven-localizer-plugin</artifactId>
+      <artifactId>localizer-maven-plugin</artifactId>
       <executions>
         <execution>
           <goals>
@@ -89,7 +89,7 @@ How to use this?
 -----------------------------------------
 <taskdef name="localizer-gen" classname="org.jvnet.localizer.GeneratorTask">
   <classpath>
-    <pathelement location="path/to/maven-localizer-plugin.jar"/>
+    <pathelement location="path/to/localizer-maven-plugin.jar"/>
     <pathelement location="path/to/localizer.jar"/>
   </classpath>
 </taskdef>
