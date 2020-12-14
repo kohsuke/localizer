@@ -3,7 +3,7 @@
   <groupId>org.jvnet.localizer</groupId>
   <artifactId>localizer-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.29-SNAPSHOT</version>
+  <version>1.29</version>
   <name>Localizer parent POM</name>
   <modules>
     <module>lib</module>
@@ -14,7 +14,7 @@
   <scm>
     <connection>scm:git:git@github.com/kohsuke/localizer.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/kohsuke/localizer.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>localizer-parent-1.29</tag>
   </scm>
 
   <properties>
